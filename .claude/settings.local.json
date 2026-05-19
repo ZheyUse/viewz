@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Faith Claire Anne\\\\Documents\\\\ZheysProject\\\\viewz\" -Force)",
-      "Bash(Select-Object Name, Mode)"
+      "Bash(Select-Object Name, Mode)",
+      "Bash(Remove-Item *)"
     ]
   }
 }

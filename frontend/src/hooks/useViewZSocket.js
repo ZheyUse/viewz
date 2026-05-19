@@ -33,6 +33,7 @@ export function useViewZSocket() {
       });
 
       socket.on('progress', ({ current: curr, total: tot }) => {
+        console.log('[DEBUG Frontend] Progress received:', curr, '/', tot);
         setStatus('running');
         setCurrent(curr);
         setTotal(tot);

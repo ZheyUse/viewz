@@ -53,7 +53,7 @@ export default function InputPanel({ onSubmit, disabled }) {
             onChange={(e) => setDelay(parseInt(e.target.value))}
             min={0}
             max={60000}
-            step={100}
+            step={50}
             disabled={disabled}
             className="w-full bg-bg border border-border px-4 py-3 font-sans text-sm text-white focus:border-accent focus:outline-none focus:shadow-[0_0_0_1px_#39ff14] transition-all"
           />

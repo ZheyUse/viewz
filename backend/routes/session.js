@@ -12,24 +12,30 @@ const startLimiter = rateLimit({
 });
 
 router.post('/start', startLimiter, async (req, res) => {
+  console.log('[DEBUG] POST /api/start called');
+  console.log('[DEBUG] Body:', req.body);
   const { url, count, delay } = req.body;
 
   const validation = validateUrl(url);
   if (!validation.valid) {
+    console.log('[DEBUG] URL validation failed:', validation.reason);
     return res.status(400).json({ error: validation.reason });
   }
 
   const parsedCount = parseInt(count, 10);
   if (isNaN(parsedCount) || parsedCount < 1 || parsedCount > 10000) {
+    console.log('[DEBUG] Invalid count:', count);
     return res.status(400).json({ error: 'Count must be between 1 and 10000' });
   }
 
   const parsedDelay = parseInt(delay, 10);
   if (isNaN(parsedDelay) || parsedDelay < 0 || parsedDelay > 60000) {
+    console.log('[DEBUG] Invalid delay:', delay);
     return res.status(400).json({ error: 'Delay must be between 0 and 60000ms' });
   }
 
   const sessionId = crypto.randomUUID();
+  console.log('[DEBUG] Creating job with sessionId:', sessionId);
 
   await queue.add('view-session', {
     url,
@@ -38,6 +44,7 @@ router.post('/start', startLimiter, async (req, res) => {
     sessionId,
   });
 
+  console.log('[DEBUG] Job added to queue');
   res.json({ sessionId, queued: true });
 });
 

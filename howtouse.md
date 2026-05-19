@@ -5,49 +5,115 @@ ViewZ is a headless link-opening engine. It opens a URL a specified number of ti
 ## Prerequisites
 
 - Node.js 20+
-- Docker + Docker Compose (for Redis)
-- Redis running locally
+- Docker Desktop (for Redis)
+
+---
+
+## Setting Up Redis (with Docker)
+
+### Start Redis Container
+
+```powershell
+docker run -d -p 6379:6379 --name redis redis:alpine
+```
+
+### Verify Redis is Running
+
+```powershell
+docker exec redis redis-cli ping
+```
+
+Should return: `PONG`
+
+### Start Redis (after reboot)
+
+```powershell
+docker start redis
+```
+
+### Stop Redis (when done)
+
+```powershell
+docker stop redis
+```
+
+---
 
 ## Development Setup
 
-### 1. Start Redis
+### 1. Install Dependencies
 
 ```bash
-docker compose up redis -d
+npm run install:all
 ```
 
-### 2. Start Backend
+This installs backend and frontend dependencies.
+
+### 2. Configure Backend
+
+Create `backend/.env` file:
+
+```env
+REDIS_URL=redis://localhost:6379
+PORT=3001
+FRONTEND_URL=http://localhost:5173
+```
+
+---
+
+## Running the App
+
+### Quick Start (Everything)
+
+From the project root:
 
 ```bash
-cd backend
-npm install
-npm run dev
+npm run start:all
 ```
 
-Server runs on `http://localhost:3001`
+This starts:
+- Backend API server (port 3001)
+- Backend worker (processes jobs)
+- Frontend (port 5173)
 
-### 3. Start Worker
+### Running Separately
 
-Open a new terminal:
+**Backend only (server + worker):**
+```bash
+npm run dev:backend
+```
+
+**Frontend only:**
+```bash
+npm run dev:frontend
+```
+
+### Stopping
 
 ```bash
-cd backend
-npm run worker
+npm run stop:all
 ```
 
-The worker processes jobs from the queue and opens URLs with Puppeteer.
-
-### 4. Start Frontend
-
-Open a new terminal:
+### Restarting
 
 ```bash
-cd frontend
-npm install
-npm run dev
+npm run restart:all
 ```
 
-Frontend runs on `http://localhost:5173`
+---
+
+## Scripts Reference
+
+| Command | What it does |
+|---------|-------------|
+| `npm run start:all` | Start backend + frontend |
+| `npm run stop:all` | Stop everything |
+| `npm run restart:all` | Stop then start |
+| `npm run dev:backend` | Start backend only |
+| `npm run dev:frontend` | Start frontend only |
+| `npm run install:all` | Install all dependencies |
+
+---
 
 ## Using the App
 
@@ -65,6 +131,8 @@ Frontend runs on `http://localhost:5173`
 
 7. When complete, the success modal appears with a "Run Again" button
 
+---
+
 ## Security Notes
 
 The following are blocked and will return an error:
@@ -73,41 +141,40 @@ The following are blocked and will return an error:
 - Non-http/https URLs
 - Rate limit: 5 requests per minute per IP
 
-## Production Deployment
+---
 
-### Docker Compose
+## Troubleshooting
 
-```bash
-docker compose up --build
-```
+### Redis connection error
+- Make sure Docker Desktop is running
+- Check container: `docker ps`
+- Restart if needed: `docker restart redis`
 
-This starts all three services:
-- Redis on port 6379
-- Backend on port 3001
-- Frontend on port 80 (mapped to 5173)
+### Nothing happens after clicking Proceed
+- Make sure `npm run start:all` shows no errors
+- Check both backend and frontend terminals
 
-### Manual Production
+### Rate limit hit
+- Wait 60 seconds — the limit is 5 requests per minute per IP
 
-```bash
-# Build frontend
-cd frontend && npm run build
+---
 
-# Start services
-cd backend && npm start
-cd backend && npm run worker
-```
+## Docker Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `docker run -d -p 6379:6379 --name redis redis:alpine` | Start Redis container |
+| `docker start redis` | Start existing Redis container |
+| `docker stop redis` | Stop Redis container |
+| `docker exec redis redis-cli ping` | Test Redis connection |
+| `docker ps` | List running containers |
+| `docker rm redis` | Remove Redis container |
+
+---
 
 ## Tips
 
 - Start with small counts (10-100) to test
 - Higher delays reduce server load and avoid rate limiting on target sites
-- The worker runs headless — no browser window opens on the server
-- Socket.IO handles real-time progress updates even behind proxies
-
-## Troubleshooting
-
-**Redis connection error**: Make sure Docker is running and the redis service is up (`docker compose up redis -d`)
-
-**Rate limit hit**: Wait 60 seconds — the limit is 5 requests per minute per IP
-
-**Worker not processing jobs**: Check that both `npm run dev` (server) and `npm run worker` are running in separate terminals
+- The worker runs headless — no browser window opens anywhere
+- Socket.IO handles real-time progress updates
