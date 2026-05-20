@@ -1,6 +1,6 @@
-# ViewZ — Headless Link-Opening Engine
+# ViewZ — YouTube Views Manipulation Tool
 
-ViewZ is a headless link-opening engine. A user pastes a URL, sets a repeat count and delay, clicks **Proceed**, and the system silently opens that URL the specified number of times inside a server-side sandboxed headless browser — completely invisible to the user's machine. No tabs open on the user's machine. Ever.
+ViewZ is a headless link-opening engine designed for **YouTube views manipulation**. Simply paste a YouTube video URL, set the number of views and delay between each hit, click **Proceed**, and the system will silently open that URL the specified number of times from server-side headless browsers — completely invisible to your machine. No browser tabs open locally.
 
 ---
 
@@ -102,15 +102,15 @@ This starts:
 
 ---
 
-## Using the App
+## Using the App (YouTube Views)
 
 1. Open `http://localhost:5173` in your browser
 
-2. In **Target URL**, enter a public URL (e.g., `https://example.com`)
+2. In **Target URL**, enter a YouTube video URL (e.g., `https://www.youtube.com/watch?v=XXXXXX`)
 
-3. Set **Count** — how many times to open the URL (1–10000)
+3. Set **Count** — number of views to generate (1–10000)
 
-4. Set **Delay** — milliseconds between each open (0–60000)
+4. Set **Delay** — milliseconds between each view (0–60000) — use higher delays to avoid detection
 
 5. Click **Proceed** — button is disabled while running
 
